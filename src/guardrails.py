@@ -3,7 +3,7 @@ Guardrails module for human-in-the-loop control.
 Implements PAUSE functionality for mandatory human review.
 """
 
-from typing import Optional, Callable, Dict, Any
+from typing import Optional, Callable, Dict, Any, List
 from enum import Enum
 
 
@@ -119,7 +119,7 @@ class Guardrails:
         self,
         content: str,
         stage: str,
-        validators: Optional[list[Callable[[str], bool]]] = None
+        validators: Optional[List[Callable[[str], bool]]] = None
     ) -> str:
         """
         Validate content and pause for human review.
@@ -149,6 +149,6 @@ class Guardrails:
         
         return review_result["content"]
     
-    def get_review_history(self) -> list:
+    def get_review_history(self) -> List[Dict[str, Any]]:
         """Get the history of all reviews."""
         return self.review_history.copy()
