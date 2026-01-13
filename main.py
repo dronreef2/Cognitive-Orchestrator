@@ -27,17 +27,17 @@ def orchestrate(topic: str) -> None:
     editor = Editor(connector=_connector_for_model(editor_model))
 
     research_notes = researcher.run(topic)
-    print("\n=== Research Notes (Gemini) ===\n", research_notes)
+    print(f"\n=== Research Notes ({researcher_model}) ===\n", research_notes)
 
     critique = critic.run(topic, research_notes)
-    print("\n=== Critique (Ollama) ===\n", critique)
+    print(f"\n=== Critique ({critic_model}) ===\n", critique)
 
     if not verify("Review the critique above. Approve to continue to editing."):
         print("Execution halted by human reviewer.")
         return
 
     final_output = editor.run(topic, research_notes, critique)
-    print("\n=== Final Draft (OpenAI) ===\n", final_output)
+    print(f"\n=== Final Draft ({editor_model}) ===\n", final_output)
 
 
 if __name__ == "__main__":
