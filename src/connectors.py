@@ -15,13 +15,15 @@ class LLMConnector:
 
     def chat(self, prompt: str, **kwargs: Any) -> str:
         """Send a user prompt to the configured model and return the text reply."""
-        if not prompt:
+        if not prompt or not str(prompt).strip():
             raise ValueError("Prompt must be a non-empty string.")
         response: Dict[str, Any] = completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
+        if not isinstance(response, dict) or not response.get("choices"):
+            raise RuntimeError(f"LiteLLM response missing choices: {response!r}")
         try:
             content = response["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
