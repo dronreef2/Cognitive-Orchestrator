@@ -7,13 +7,17 @@ from src.agents import Critic, Editor, Researcher
 from src.connectors import LLMConnector, gemini_client, ollama_client, openai_client
 from src.guardrails import verify
 
+MODEL_PREFIX_MAP = {
+    "gemini/": gemini_client,
+    "ollama/": ollama_client,
+}
+
 
 def _connector_for_model(model_name: str) -> LLMConnector:
     normalized = (model_name or "").lower()
-    if normalized.startswith("gemini"):
-        return gemini_client(model_name)
-    if normalized.startswith("ollama"):
-        return ollama_client(model_name)
+    for prefix, factory in MODEL_PREFIX_MAP.items():
+        if normalized.startswith(prefix):
+            return factory(model_name)
     return openai_client(model_name)
 
 

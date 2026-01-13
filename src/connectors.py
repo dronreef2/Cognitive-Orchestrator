@@ -46,6 +46,8 @@ class LLMConnector:
             raise RuntimeError(
                 f"LiteLLM response returned None content: {response!r}"
             )
+        if not isinstance(content, str):
+            content = str(content)
         return content
 
 

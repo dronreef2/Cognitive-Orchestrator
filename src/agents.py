@@ -15,6 +15,7 @@ CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 def _sanitize_block(text: str) -> str:
     cleaned = CONTROL_CHARS.sub(" ", text or "")
     escaped = html.escape(cleaned).strip()
+    escaped = re.sub(r"\s+", " ", escaped)
     if not escaped:
         return "[no content]"
     return f"```\n{escaped}\n```"
