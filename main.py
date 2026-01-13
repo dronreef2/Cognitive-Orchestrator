@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
-
-# Ensure local src package is importable when running `python main.py`
-sys.path.append(str(Path(__file__).parent))
 
 from src.agents import Critic, Editor, Researcher
 from src.connectors import gemini_client, ollama_client, openai_client

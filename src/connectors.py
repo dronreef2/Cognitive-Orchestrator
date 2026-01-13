@@ -25,9 +25,13 @@ class LLMConnector:
         try:
             content = response["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
-            raise RuntimeError("Unexpected response format from LiteLLM") from exc
+            raise RuntimeError(
+                f"Unexpected LiteLLM response structure: {response!r}"
+            ) from exc
         if content is None:
-            raise RuntimeError("LiteLLM response did not include message content")
+            raise RuntimeError(
+                f"LiteLLM response returned None content: {response!r}"
+            )
         return content
 
 
