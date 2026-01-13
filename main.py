@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 
 from src.agents import Critic, Editor, Researcher
@@ -8,9 +9,13 @@ from src.guardrails import verify
 
 
 def orchestrate(topic: str) -> None:
-    researcher = Researcher(connector=gemini_client())
-    critic = Critic(connector=ollama_client())
-    editor = Editor(connector=openai_client())
+    researcher_model = os.getenv("RESEARCH_MODEL", "gemini/gemini-1.5-flash")
+    critic_model = os.getenv("CRITIC_MODEL", "ollama/llama3")
+    editor_model = os.getenv("EDITOR_MODEL", "gpt-4o-mini")
+
+    researcher = Researcher(connector=gemini_client(researcher_model))
+    critic = Critic(connector=ollama_client(critic_model))
+    editor = Editor(connector=openai_client(editor_model))
 
     research_notes = researcher.run(topic)
     print("\n=== Research Notes (Gemini) ===\n", research_notes)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import re
 from dataclasses import dataclass
 
@@ -13,10 +14,10 @@ CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 
 def _sanitize_block(text: str) -> str:
     cleaned = CONTROL_CHARS.sub(" ", text or "")
-    cleaned = cleaned.replace("```", "'''").strip()
-    if not cleaned:
+    escaped = html.escape(cleaned).strip()
+    if not escaped:
         return "[no content]"
-    return f"```\n{cleaned}\n```"
+    return f"```\n{escaped}\n```"
 
 
 @dataclass
