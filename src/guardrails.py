@@ -11,7 +11,11 @@ def verify(message: str) -> bool:
     print("\n=== HUMAN VERIFICATION REQUIRED ===")
     print(message)
     while True:
-        response = input("Proceed? [y/N]: ").strip().lower()
+        try:
+            response = input("Proceed? [y/N]: ").strip().lower()
+        except EOFError:
+            print("No interactive input available. Halting for safety.")
+            return False
         if response in {"y", "yes"}:
             return True
         if response in {"n", "no", ""}:

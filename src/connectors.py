@@ -20,7 +20,10 @@ class LLMConnector:
             messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
-        return response["choices"][0]["message"]["content"]
+        try:
+            return response["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise RuntimeError("Unexpected response format from LiteLLM") from exc
 
 
 def openai_client(model: str = "gpt-4o-mini") -> LLMConnector:
