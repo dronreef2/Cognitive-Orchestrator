@@ -29,7 +29,7 @@ class LLMConnector:
         unexpected = set(kwargs) - ALLOWED_COMPLETION_KWARGS
         if unexpected:
             raise ValueError(f"Unsupported parameters for LiteLLM call: {unexpected}")
-        response: Dict[str, Any] = completion(
+        response = completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             **kwargs,

@@ -4,8 +4,17 @@ import os
 import sys
 
 from src.agents import Critic, Editor, Researcher
-from src.connectors import gemini_client, ollama_client, openai_client
+from src.connectors import LLMConnector, gemini_client, ollama_client, openai_client
 from src.guardrails import verify
+
+
+def _connector_for_model(model_name: str) -> LLMConnector:
+    normalized = (model_name or "").lower()
+    if normalized.startswith("gemini"):
+        return gemini_client(model_name)
+    if normalized.startswith("ollama"):
+        return ollama_client(model_name)
+    return openai_client(model_name)
 
 
 def orchestrate(topic: str) -> None:
@@ -13,9 +22,9 @@ def orchestrate(topic: str) -> None:
     critic_model = os.getenv("CRITIC_MODEL", "ollama/llama3")
     editor_model = os.getenv("EDITOR_MODEL", "gpt-4o-mini")
 
-    researcher = Researcher(connector=gemini_client(researcher_model))
-    critic = Critic(connector=ollama_client(critic_model))
-    editor = Editor(connector=openai_client(editor_model))
+    researcher = Researcher(connector=_connector_for_model(researcher_model))
+    critic = Critic(connector=_connector_for_model(critic_model))
+    editor = Editor(connector=_connector_for_model(editor_model))
 
     research_notes = researcher.run(topic)
     print("\n=== Research Notes (Gemini) ===\n", research_notes)
