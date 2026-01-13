@@ -15,15 +15,20 @@ class LLMConnector:
 
     def chat(self, prompt: str, **kwargs: Any) -> str:
         """Send a user prompt to the configured model and return the text reply."""
+        if not prompt:
+            raise ValueError("Prompt must be a non-empty string.")
         response: Dict[str, Any] = completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
         try:
-            return response["choices"][0]["message"]["content"]
+            content = response["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
             raise RuntimeError("Unexpected response format from LiteLLM") from exc
+        if content is None:
+            raise RuntimeError("LiteLLM response did not include message content")
+        return content
 
 
 def openai_client(model: str = "gpt-4o-mini") -> LLMConnector:

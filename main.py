@@ -31,7 +31,11 @@ def orchestrate(topic: str) -> None:
 
 
 if __name__ == "__main__":
-    user_topic = input("Topic to explore: ").strip()
+    try:
+        user_topic = input("Topic to explore: ").strip()
+    except EOFError:
+        print("No interactive input available. Exiting.")
+        sys.exit(0)
     if not user_topic:
         print("No topic provided. Exiting.")
         sys.exit(0)
