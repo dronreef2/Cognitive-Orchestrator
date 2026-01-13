@@ -6,6 +6,15 @@ from typing import Any, Dict
 
 from litellm import completion
 
+ALLOWED_COMPLETION_KWARGS = {
+    "temperature",
+    "max_tokens",
+    "top_p",
+    "presence_penalty",
+    "frequency_penalty",
+    "stop",
+}
+
 
 class LLMConnector:
     """Thin wrapper around litellm.completion to normalize chat calls."""
@@ -17,6 +26,9 @@ class LLMConnector:
         """Send a user prompt to the configured model and return the text reply."""
         if not prompt or not str(prompt).strip():
             raise ValueError("Prompt must be a non-empty string.")
+        unexpected = set(kwargs) - ALLOWED_COMPLETION_KWARGS
+        if unexpected:
+            raise ValueError(f"Unsupported parameters for LiteLLM call: {unexpected}")
         response: Dict[str, Any] = completion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],

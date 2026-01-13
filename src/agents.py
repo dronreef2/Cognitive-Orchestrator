@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from .connectors import LLMConnector
 
 
+CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+
+
 def _sanitize_block(text: str) -> str:
-    cleaned = (text or "").strip()
+    cleaned = CONTROL_CHARS.sub(" ", text or "")
+    cleaned = cleaned.replace("```", "'''").strip()
     if not cleaned:
         return "[no content]"
     return f"```\n{cleaned}\n```"
